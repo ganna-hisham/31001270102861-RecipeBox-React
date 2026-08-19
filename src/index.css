@@ -1,111 +1,266 @@
-:root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
-
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
-
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
 }
 
 body {
-  margin: 0;
+  background-color: #f8fafc;
+  color: #2d3748;
+  padding: 20px;
 }
 
-#root {
-  width: 1126px;
-  max-width: 100%;
+.app-container {
+  max-width: 800px;
   margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
   display: flex;
   flex-direction: column;
-  box-sizing: border-box;
+  gap: 30px;
 }
 
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
+/* Header */
+header {
+  background: linear-gradient(135deg, #ea6687 0%, #9c70c9 100%);
+  color: #ffffff;
+  padding: 30px 20px;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 10px 15px -5px rgba(0, 0, 0, 0.16);
 }
 
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
-p {
-  margin: 0;
+header h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 15px;
 }
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
+header nav {
+  background: rgba(255, 255, 255, 0.15);
+  display: inline-block;
+  padding: 8px 20px;
+  border-radius: 50px;
+  backdrop-filter: blur(5px);
 }
 
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+header nav a {
+  color: #ffffff;
+  text-decoration: none;
+  margin: 0 15px;
+  font-weight: 600;
+}
+
+/* Search & Filters */
+.search-filter-section {
+  display: flex;
+  gap: 15px;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -5px rgba(0, 0, 0, 0.3);
+  flex-wrap: wrap;
+}
+
+.search-filter-section input,
+.search-filter-section select {
+  flex: 1;
+  min-width: 200px;
+  padding: 12px 18px;
+  border: 2px solid #9c70c9;
+  border-radius: 10px;
+  font-size: 1rem;
+  color: #2d3748;
+}
+
+.search-filter-section input:focus,
+.search-filter-section select:focus {
+  border-color: #764ba2;
+  outline: none;
+}
+
+/* Cards Grid */
+.recipe-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 25px;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 25px;
+  box-shadow: 0 10px 15px -5px rgba(0, 0, 0, 0.16);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+}
+
+/* الشريط الجانبي المستند للصعوبة */
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 100%;
+}
+
+.card.Easy::before { background-color: #3fd17c; }
+.card.Medium::before { background-color: #eda436; }
+.card.Hard::before { background-color: #e74545; }
+
+.card h3 {
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: #2d3748;
+}
+
+.card-details {
+  font-size: 1rem;
+  color: #718096;
+}
+
+.card-details span {
+  font-weight: 600;
+  color: #2d3748;
+}
+
+/* شريط / Badge الصعوبة بألوان محددة لكل مستوى */
+.difficulty-btn {
+  display: block;
+  text-align: center;
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  margin: 5px 0;
+}
+
+.card.Easy .difficulty-btn {
+  background-color: #e6f4ea;
+  color: #2e7d32;
+  border: 1px solid #3fd17c;
+}
+
+.card.Medium .difficulty-btn {
+  background-color: #fff4e5;
+  color: #b76e00;
+  border: 1px solid #eda436;
+}
+
+.card.Hard .difficulty-btn {
+  background-color: #fce8e6;
+  color: #c62828;
+  border: 1px solid #e74545;
+}
+
+/* Timer Box */
+.timer-box {
+  background: #f8fafc;
+  padding: 15px;
+  border-radius: 12px;
+  text-align: center;
+  border: 2px dashed #cbd5e1;
+}
+
+.timer-box h4 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #3a1163;
+  margin-bottom: 12px;
+}
+
+/* أزرار الـ Start و Reset جوه الـ Timer */
+.timer-box button,
+.timer-controls button {
+  background-color: #3a1163 !important;
+  color: #ffffff !important;
+  padding: 8px 18px !important;
+  border: none !important;
+  border-radius: 10px !important;
+  font-weight: 700 !important;
+  font-size: 0.85rem !important;
+  cursor: pointer;
+  margin: 0 4px !important;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: opacity 0.2s ease;
+}
+
+.timer-box button:hover,
+.timer-controls button:hover {
+  opacity: 0.85;
+}
+
+/* أزرار Edit / Delete */
+.card-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.card-actions button {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  background-color: #3a1163;
+  color: #ffffff;
+  transition: opacity 0.2s ease;
+}
+
+.card-actions button:hover {
+  opacity: 0.85;
+}
+
+/* Forms */
+form {
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  box-shadow: 0 10px 15px -5px rgba(0, 0, 0, 0.16);
+  border: 1px solid #e2e8f0;
+}
+
+form input, form select, form textarea {
+  padding: 12px;
+  border: 2px solid #9c70c9;
+  border-radius: 10px;
+  width: 100%;
+}
+/* 📝 تنسيق عنوان وزرار الفورم */
+form h2 {
+  color: #3a1163;
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+form button[type="submit"] {
+  background-color: #3a1163 !important;
+  color: #ffffff !important;
+  padding: 14px !important;
+  border: none !important;
+  border-radius: 12px !important;
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 10px;
+  transition: opacity 0.2s ease;
+}
+
+form button[type="submit"]:hover {
+  opacity: 0.85;
 }

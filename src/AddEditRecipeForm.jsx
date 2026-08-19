@@ -1,24 +1,20 @@
 import { useState, useEffect } from 'react';
-// استوردنا ملف الـ validators اللي عملتوه في Task 1
-import { validateRecipe } from './utils/validators.js';
+import { useNavigate } from 'react-router-dom';
 
 function AddEditRecipeForm({ recipeToEdit, onSave }) {
-  // 1. حالات الـ State لكل Input
+  const navigate = useNavigate();
+
   const [title, setTitle] = useState('');
   const [ingredients, setIngredients] = useState('');
   const [instructions, setInstructions] = useState('');
   const [cookTime, setCookTime] = useState('');
   const [category, setCategory] = useState('');
   const [difficulty, setDifficulty] = useState('Easy');
-
-  // مسك الأخطاء للـ Immediate Feedback
   const [errors, setErrors] = useState({});
 
-  // 2. لو بنعدل (recipeToEdit موجود)، املي الفورمة ببياناته
   useEffect(() => {
     if (recipeToEdit) {
       setTitle(recipeToEdit.title || '');
-      // المكونات لو Array بنحولها لـ String مصلول بفاصلة عشان نكتبها بسهولة في الـ Input
       setIngredients(
         Array.isArray(recipeToEdit.ingredients)
           ? recipeToEdit.ingredients.join(', ')
@@ -31,24 +27,22 @@ function AddEditRecipeForm({ recipeToEdit, onSave }) {
     }
   }, [recipeToEdit]);
 
-  // 3. دالة التحقق أثناء الكتابة
-  const validateField = (fieldData) => {
-    const validationErrors = validateRecipe(fieldData);
-    setErrors(validationErrors || {});
-    return !validationErrors || Object.keys(validationErrors).length === 0;
-  };
-
-  // 4. عند الـ Submit
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // تحويل المكونات لـ Array
+    // تحقق بسيط عشان يمنع إرسال بيانات فاضية
+    const validationErrors = {};
+    if (!title.trim()) validationErrors.title = 'Title is required';
+    if (!cookTime.trim()) validationErrors.cookTime = 'Cook time is required';
+
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
     const ingredientsArray =
       typeof ingredients === 'string'
-        ? ingredients
-            .split(',')
-            .map((item) => item.trim())
-            .filter(Boolean)
+        ? ingredients.split(',').map((item) => item.trim()).filter(Boolean)
         : ingredients;
 
     const formData = {
@@ -60,24 +54,14 @@ function AddEditRecipeForm({ recipeToEdit, onSave }) {
       difficulty,
     };
 
-    // نتحقق من البيانات بالـ validator الأول
-    const isValid = validateField(formData);
-    if (!isValid) return; // نوقف اللوجيك لو فيه أخطاء
-
     if (recipeToEdit) {
-      // ⚠️ مهم جداً: في حالة التعديل بنعدل نفس الـ Object الأصلي
-      recipeToEdit.title = title;
-      recipeToEdit.ingredients = ingredientsArray;
-      recipeToEdit.instructions = instructions;
-      recipeToEdit.cookTime = cookTime;
-      recipeToEdit.category = category;
-      recipeToEdit.difficulty = difficulty;
-
-      onSave(recipeToEdit);
+      onSave({ ...recipeToEdit, ...formData });
     } else {
-      // في حالة الإضافة بنبعت البيانات لـ App.jsx ينشئ بيها object جديد بـ Constructor
       onSave(formData);
     }
+
+    // التحويل التلقائي للصفحة الرئيسية بعد الإضافة أو التعديل
+    navigate('/');
   };
 
   return (
@@ -101,9 +85,6 @@ function AddEditRecipeForm({ recipeToEdit, onSave }) {
           value={ingredients}
           onChange={(e) => setIngredients(e.target.value)}
         />
-        {errors.ingredients && (
-          <span className="error">{errors.ingredients}</span>
-        )}
       </div>
 
       <div>
@@ -112,9 +93,6 @@ function AddEditRecipeForm({ recipeToEdit, onSave }) {
           value={instructions}
           onChange={(e) => setInstructions(e.target.value)}
         />
-        {errors.instructions && (
-          <span className="error">{errors.instructions}</span>
-        )}
       </div>
 
       <div>
@@ -134,7 +112,6 @@ function AddEditRecipeForm({ recipeToEdit, onSave }) {
           value={category}
           onChange={(e) => setCategory(e.target.value)}
         />
-        {errors.category && <span className="error">{errors.category}</span>}
       </div>
 
       <div>

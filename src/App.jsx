@@ -1,19 +1,22 @@
 import { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import Recipe from './utils/Recipe.js';
 import RecipeCard from './RecipeCard.jsx';
 import AddEditRecipeForm from './AddEditRecipeForm.jsx';
+import Layout from './Layout.jsx';
+import NotFound from './NotFound.jsx';
 import { filterRecipes, searchRecipes } from './utils/helpers.js';
 
-function App() {
+// مكون فرعي عشان نقدر نستخدم useNavigate جوه الراوتر
+function MainApp() {
+  const navigate = useNavigate();
   const [editingRecipe, setEditingRecipe] = useState(null);
 
-  // 1. استرجاع الوصفات من localStorage أول ما الأبلكيشن يفتح (Lazy State Initialization)
   const [recipes, setRecipes] = useState(() => {
     const savedRecipes = localStorage.getItem('recipes_data');
     if (savedRecipes) {
       try {
         const parsed = JSON.parse(savedRecipes);
-        // إعادتها كـ Objects من الـ Constructor الأصلي
         return parsed.map(
           (r) =>
             new Recipe(
@@ -30,7 +33,6 @@ function App() {
         console.error('Failed to parse recipes from localStorage', e);
       }
     }
-    // القيمة الافتراضية لو الـ localStorage فاضي تماماً
     return [
       new Recipe(
         1,
@@ -57,12 +59,10 @@ function App() {
   const [categoryFilter, setCategoryFilter] = useState('');
   const [difficultyFilter, setDifficultyFilter] = useState('');
 
-  // 2. الحفظ في localStorage فوراً عند كل تغيير (Add, Edit, Delete)
   useEffect(() => {
     localStorage.setItem('recipes_data', JSON.stringify(recipes));
   }, [recipes]);
 
-  // دالة الحذف بـ Confirmation
   const handleDeleteRecipe = (id) => {
     const isConfirmed = window.confirm(
       'Are you sure you want to delete this recipe?'
@@ -72,10 +72,14 @@ function App() {
     }
   };
 
-  // دالة الحفظ (إضافة وتعديل)
+  // دالة الحفظ للإضافة والتعديل
   const handleSaveRecipe = (formDataOrUpdatedObject) => {
     if (editingRecipe) {
-      setRecipes([...recipes]);
+      setRecipes(
+        recipes.map((r) =>
+          r.id === formDataOrUpdatedObject.id ? formDataOrUpdatedObject : r
+        )
+      );
       setEditingRecipe(null);
     } else {
       const newRecipeObj = new Recipe(
@@ -91,59 +95,90 @@ function App() {
     }
   };
 
+  // عند الضغط على Edit بنسجل الوصفة وبننقل لصفحة /add
+  const handleStartEdit = (recipe) => {
+    setEditingRecipe(recipe);
+    navigate('/add');
+  };
+
   let filtered = searchRecipes(recipes, searchTerm);
   filtered = filterRecipes(filtered, categoryFilter, difficultyFilter);
 
   return (
-    <div className="app-container">
-      {/* 🔍 البحث والفلترة */}
-      <div className="search-filter-section">
-        <input
-          type="text"
-          placeholder="Search recipes..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        {/* الصفحة الرئيسية */}
+        <Route
+          index
+          element={
+            <div className="app-container">
+              <div className="search-filter-section">
+                <input
+                  type="text"
+                  placeholder="Search recipes..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+
+                <select
+                  value={categoryFilter}
+                  onChange={(e) => setCategoryFilter(e.target.value)}
+                >
+                  <option value="">All Categories</option>
+                  <option value="main">Main</option>
+                  <option value="starter">Starter</option>
+                  <option value="dessert">Dessert</option>
+                </select>
+
+                <select
+                  value={difficultyFilter}
+                  onChange={(e) => setDifficultyFilter(e.target.value)}
+                >
+                  <option value="">All Difficulties</option>
+                  <option value="Easy">Easy</option>
+                  <option value="Medium">Medium</option>
+                  <option value="Hard">Hard</option>
+                </select>
+              </div>
+
+              <div className="recipe-list">
+                {filtered.map((recipe) => (
+                  <RecipeCard
+                    key={recipe.id}
+                    recipe={recipe}
+                    onEdit={() => handleStartEdit(recipe)}
+                    onDelete={() => handleDeleteRecipe(recipe.id)}
+                  />
+                ))}
+              </div>
+            </div>
+          }
         />
 
-        <select
-          value={categoryFilter}
-          onChange={(e) => setCategoryFilter(e.target.value)}
-        >
-          <option value="">All Categories</option>
-          <option value="main">Main</option>
-          <option value="starter">Starter</option>
-          <option value="dessert">Dessert</option>
-        </select>
+        {/* صفحة الإضافة والتعديل */}
+        <Route
+          path="add"
+          element={
+            <div className="app-container">
+              <AddEditRecipeForm
+                recipeToEdit={editingRecipe}
+                onSave={handleSaveRecipe}
+              />
+            </div>
+          }
+        />
 
-        <select
-          value={difficultyFilter}
-          onChange={(e) => setDifficultyFilter(e.target.value)}
-        >
-          <option value="">All Difficulties</option>
-          <option value="Easy">Easy</option>
-          <option value="Medium">Medium</option>
-          <option value="Hard">Hard</option>
-        </select>
-      </div>
+        <Route path="*" element={<NotFound />} />
+      </Route>
+    </Routes>
+  );
+}
 
-      {/* 📝 الفورمة */}
-      <AddEditRecipeForm
-        recipeToEdit={editingRecipe}
-        onSave={handleSaveRecipe}
-      />
-
-      {/* 📋 القائمة */}
-      <div className="recipe-list">
-        {filtered.map((recipe) => (
-          <RecipeCard
-            key={recipe.id}
-            recipe={recipe}
-            onEdit={() => setEditingRecipe(recipe)}
-            onDelete={() => handleDeleteRecipe(recipe.id)}
-          />
-        ))}
-      </div>
-    </div>
+function App() {
+  return (
+    <BrowserRouter>
+      <MainApp />
+    </BrowserRouter>
   );
 }
 
