@@ -7,7 +7,6 @@ import Layout from './Layout.jsx';
 import NotFound from './NotFound.jsx';
 import { filterRecipes, searchRecipes } from './utils/helpers.js';
 
-// مكون فرعي عشان نقدر نستخدم useNavigate جوه الراوتر
 function MainApp() {
   const navigate = useNavigate();
   const [editingRecipe, setEditingRecipe] = useState(null);
@@ -72,7 +71,6 @@ function MainApp() {
     }
   };
 
-  // دالة الحفظ للإضافة والتعديل
   const handleSaveRecipe = (formDataOrUpdatedObject) => {
     if (editingRecipe) {
       setRecipes(
@@ -95,7 +93,6 @@ function MainApp() {
     }
   };
 
-  // عند الضغط على Edit بنسجل الوصفة وبننقل لصفحة /add
   const handleStartEdit = (recipe) => {
     setEditingRecipe(recipe);
     navigate('/add');
@@ -107,7 +104,6 @@ function MainApp() {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
-        {/* الصفحة الرئيسية */}
         <Route
           index
           element={
@@ -155,7 +151,7 @@ function MainApp() {
           }
         />
 
-        {/* صفحة الإضافة والتعديل */}
+        
         <Route
           path="add"
           element={

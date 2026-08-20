@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 
 function CookingTimer({ initialMinutes = 10 }) {
-  // نحول الدقائق لثواني
   const [secondsLeft, setSecondsLeft] = useState(initialMinutes * 60);
   const [isActive, setIsActive] = useState(false);
 
@@ -17,13 +16,11 @@ function CookingTimer({ initialMinutes = 10 }) {
       setIsActive(false);
     }
 
-    // ⚠️ أهم خطوة: Cleanup Function لعدم استهلاك الميموري
     return () => {
       if (interval) clearInterval(interval);
     };
   }, [isActive, secondsLeft]);
 
-  // دالة لتنسيق الوقت بـ MM:SS
   const formatTime = (totalSeconds) => {
     const mins = Math.floor(totalSeconds / 60);
     const secs = totalSeconds % 60;
