@@ -30,7 +30,6 @@ function AddEditRecipeForm({ recipeToEdit, onSave }) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // تحقق بسيط عشان يمنع إرسال بيانات فاضية
     const validationErrors = {};
     if (!title.trim()) validationErrors.title = 'Title is required';
     if (!cookTime.trim()) validationErrors.cookTime = 'Cook time is required';
@@ -60,7 +59,6 @@ function AddEditRecipeForm({ recipeToEdit, onSave }) {
       onSave(formData);
     }
 
-    // التحويل التلقائي للصفحة الرئيسية بعد الإضافة أو التعديل
     navigate('/');
   };
 
