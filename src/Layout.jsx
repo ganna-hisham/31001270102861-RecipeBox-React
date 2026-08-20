@@ -12,7 +12,6 @@ function Layout() {
       </header>
 
       <main>
-        {/* المكان اللي هينزل فيه محتوى الصفحة الشغالة حالياً */}
         <Outlet />
       </main>
     </div>

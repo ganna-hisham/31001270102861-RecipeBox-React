@@ -78,7 +78,7 @@ header nav a {
   outline: none;
 }
 
-/* Cards Grid */
+/* Cards Grid  */
 .recipe-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -98,7 +98,6 @@ header nav a {
   border: 1px solid #e2e8f0;
 }
 
-/* الشريط الجانبي المستند للصعوبة */
 .card::before {
   content: '';
   position: absolute;
@@ -128,7 +127,6 @@ header nav a {
   color: #2d3748;
 }
 
-/* شريط / Badge الصعوبة بألوان محددة لكل مستوى */
 .difficulty-btn {
   display: block;
   text-align: center;
@@ -174,7 +172,6 @@ header nav a {
   margin-bottom: 12px;
 }
 
-/* أزرار الـ Start و Reset جوه الـ Timer */
 .timer-box button,
 .timer-controls button {
   background-color: #3a1163 !important;
@@ -196,7 +193,7 @@ header nav a {
   opacity: 0.85;
 }
 
-/* أزرار Edit / Delete */
+/* Edit / Delete */
 .card-actions {
   display: flex;
   gap: 10px;
@@ -238,7 +235,6 @@ form input, form select, form textarea {
   border-radius: 10px;
   width: 100%;
 }
-/* 📝 تنسيق عنوان وزرار الفورم */
 form h2 {
   color: #3a1163;
   font-size: 1.8rem;
